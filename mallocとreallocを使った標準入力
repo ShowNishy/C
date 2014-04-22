@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MEMORY_HOLD_SIZE 10
+
+int keyBordInput(char**);
+
+int main(void){
+	char* ptr;
+	
+	keyBordInput(&ptr);
+	printf("%s", ptr);
+	
+	return 0;
+}
+
+int keyBordInput(char** argptr){
+	char* ptr;
+	char* str_p;
+	int realloc_counter = 2;
+	int index;
+	int holdCounter = 0;
+	ptr = (char *)malloc(MEMORY_HOLD_SIZE);
+	str_p = ptr;
+	if( ptr == NULL ){
+	
+		return 0;
+	}
+	for(index = 0; ( str_p[index] = getchar() ) != '\n'; index++ ){
+		if( holdCounter == MEMORY_HOLD_SIZE){
+			str_p = (char *)realloc(str_p, MEMORY_HOLD_SIZE * realloc_counter);
+			realloc_counter++;
+			holdCounter = 0;
+			if(str_p == NULL){//領域確保できなかったので、メモリを開放して終了する。
+				free(ptr);
+				
+				return 0;
+			}
+		}
+		holdCounter++;
+	}
+	if(str_p != ptr){
+		free(ptr);//アドレスが変わったから、使われなくなった領域を開放する
+	}
+	str_p[index] = '\0';
+	*argptr = str_p;
+	
+	return 1;
+}
